@@ -1,0 +1,353 @@
+FitApp Schema:
+
+Client: {
+    _id,
+    first_name: String,
+    last_name: String,
+    gender: enum:  ["mail", "female"],
+    email: String,
+    password: {
+        type: String,
+        regexp: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+    },
+    mobile_number: {
+        type: String,
+        regexp: "/^(\+\d{1,3}[- ]?)?\d{10}$/"
+    },
+    coach: $Coach,
+    allow_notifications: Boolean,
+    in_body: Object,
+    birthdate: Date,
+    subscriptions: { current: $Subscriptions, prev: [$Subscriptions] },
+    program: { current: $Client_Program, prev: [$Program] },
+    activity_level: enum["Inactive", "Lightly Active", "Very Active", "Moderately Active"],
+    fitness_level: enum["Beginner&No Fitness Experience", "Mid-level&Work out moderately ", "Professional&Always work out regularly two or three times a week"],
+    createdAt: Date,
+    workout_days: [enum[weekDays]],
+    upComingMeeting: $Meeting,
+    matrices: Matrices,
+    active: boolean,
+    chat: $chat
+},
+Matrices: {
+    _id,
+    weight: { 
+        target: Number,
+        reminder: [enum[WeekDays]], 
+        current: Number, 
+        updatedAt: Date, 
+        prev: [{ weight: Number, date: Date }]
+    },
+    height: Number,
+    BMI: Number,
+    steps: Number,
+    water: Number,
+    calories: Number,
+},
+Coach: {
+    _id,
+    email: String,
+    password: String,
+    username: String,
+    birthdate: Date,
+    first_name: String,
+    last_name: String,
+    clients: [$Client],
+    upComingMeetings: [{ meeting: $Meeting }],
+    createdAt: Date,
+},
+ActionProgram: {
+    _id,
+    program: {
+        template: $Program,
+        start_date: Date,
+        end_date: Date,
+        length: Number,
+        day_details:(clone day details) [{ 
+            date: Date, 
+            workouts: [{ workout: $Workout, is_done: Boolean }]
+            Nutrition: [{ meal: $Meal, is_done: Boolean }]
+        }],
+    },
+    is_done: Boolean,
+},
+Workout: {
+    _id,
+    workout_name: String,
+    description: { video: Object, images: Array[Object], text: String },
+    needed_tool: { name: String, image: Object },
+    target_muscle: String,
+    weight: Number,
+    workout_details: { sets: Number, reps: Number, duration: Number, },
+    calories_burned: Number,
+    rest: Number,
+},
+Meal: {
+    _id,
+    name: String,
+    meal_type: enum['breakfast', 'lunch', 'dinner', snack],
+    protein: Number,
+    carbs: Number,
+    fiber: Number,
+    calories: Number,
+    fats: Number,
+    weight: Number,
+    ingredients: [String],
+    video: Object,
+},
+Program: {
+    _id,
+    made_by: $Coach,
+    length: Number,
+    target: enum["Loss Weight", "A Healthy Lifestyle", "Gain Weight", "Build Muscles"],
+    days_detail: [{ 
+        day: Number,
+        workout: [$Workout, is_done: Boolean], 
+        nutrition: [$Meal, is_done: Boolean]
+    }],
+    clients: [$Client]
+},
+Cart: {
+    _id,
+    client: $Client,
+    products: [{ product: $Product, quantity: Number }],
+},
+Subscriptions: {
+    _id,
+    plan_name: String,
+    price_per_month: Number,
+    features: [ String ],
+},
+Product: {
+    _id,
+    name: String,
+    price: Number,
+    description: String,
+    size: enum ["Medium", "Large", "Small"],
+    calories: Number,
+    review: Number, # out of 5 stars
+    paid_counter: Number,
+},
+Order: {
+    _id,
+    client: $Client,
+    products: [{ product: $Product, quantity: Number}],
+    total_price: Number,
+    shipping: $Shipping,
+    status: { enum: ["pending", "shipping", "delivered"] },
+    done_date: Date,
+    createdAt: Date,
+    payment_method: enum["visa", "paypal", ...],
+},
+Shipping: {
+    _id,
+    client: $Client,
+    mobile_number: {
+        type: String,
+        regex: '/^(\+\d{1,3}[- ]?)?\d{10}$/'
+    },
+    address: String,
+    street: String,
+    additional_details: String,
+    zip_code: Number,
+},
+Chat: {
+    _id,
+    coach: $Coach,
+    client: $Client,
+    to: enum: ["client", "coach"],
+    messages: [
+        {
+            _id,
+            text: String,
+            file: Object,
+            createdAt: Date,
+        }
+    ],
+},
+Meeting: {
+    _id,
+    coach: $Coach,
+    client: $Client,
+    date: Date,
+    status: enum: [ "pending", "approved", "cancelled", "done"],
+    url: String,
+},
+Feedbacks: {
+    _id,
+    overall_experience: String,
+    areas_to_improve: enum["Customer Service", "Slow loading", "Security issue", "Not functional", "Not responsive", "Navigation", "App crash"],
+},
+Audits: {
+    _id,
+    event: enum,
+    user: {
+        role: enum["coach", "client"],
+        id: ObjectId()
+    },
+    data: Object,
+}
+
+
+Routes And Repos:
+
+Returned Object: {
+    code,
+    success,
+    data,
+    error,
+}
+
+/**
+  *  .lean() preferred 
+  *  don't return Passwords or any sensitive information
+*/
+
+Repository Funcs: {
+    createOne,
+    getAll,
+    getAllPaginated,
+    get(filter: { field: value }),
+    getById,
+    updateById,
+    updateOne,
+    deleteById,
+}
+
+Model Routes:
+01. Client
+        i. /clients/client
+            - POST register - body: { ClientData } /*include[matrices]*/
+            - PUT update - body: { id, newDataOfClient }
+            - GET getAll
+        ii. /clients/client/:id
+            - GET get by id
+            - DELETE delete
+01. Auth
+    i. /auth/client
+        - POST login - body: { email, password }
+    ii. /auth/coach
+        - POST login - body: { email, password }
+02. Matrices
+    i. /clients/:id/matrices
+        - GET get client matrices
+        - PUT update client matrices - body: { Matrice }
+03. Coach
+    i. /coaches/coach
+        - POST register - body: { CoachData }
+        - PUT update - body: { id, newData }
+        - GET getAll
+    ii. /coaches/coach/:id
+        - GET get by id
+        - DELETE delete coach
+04. Workout
+    i. /workouts/workout
+        - POST create - body : { WorkoutData }
+        - PUT update - body : { id, newData }
+        - GET getAll
+    ii. /workouts/workout/:id
+        - GET get by id
+        - DELETE delete
+05. Meal
+    i. /meals/meal
+        - POST create - body : { mealData }
+        - PUT update - body : { id, newData }
+        - GET getAll
+    ii. /meals/meal/:id
+        - GET get by id
+        - DELETE delete
+06. Program
+    i. /programs/program
+        - POST create - body : { programData }
+        - PUT update - body : { id, newData }
+        - GET getAll
+    ii. /programs/program/:id
+        - GET get by id
+        - DELETE delete
+07. ActionProgram
+    i. /action/programs/program
+        - POST create - body : { programData }
+        - PUT update - body : { id, newData }
+        - GET getAll
+    ii. /action/programs/program/:id
+        - GET get by id
+        - DELETE delete
+08. Product
+    i. /products/product
+        - POST create - body : { productData }
+        - PUT update - body : { id, newData }
+        - GET getAll
+    ii. /products/product/:id
+        - GET get by id
+        - DELETE delete
+09. Cart
+    i. /carts/cart
+        - POST create - body : { cartData }
+        - PUT update - body : { id, newData }
+        - GET getAll
+    ii. /carts/cart/:id
+        - GET get by id
+        - DELETE delete
+10. Order
+    i. /orders/order
+        - POST create - body : { orderData }
+        - PUT update - body : { id, newData }
+        - GET getAll
+    ii. /orders/order/:id
+        - GET get by id
+        - DELETE delete
+11. Shipping
+        i. /
+            - POST create - body : { shippingData }
+            - PUT update - body : { newData }, id : req.query.id
+            - GET getAll
+        ii. /:id
+            - GET get by id
+            - DELETE delete
+11. Meeting
+    i. /meetings/meeting
+        - POST create - body : { meetingData }
+        - PUT update - body : { id, newData }
+        - GET getAll
+    ii. /meetings/meeting/:id
+        - GET get by id
+        - DELETE delete
+12. Chat
+    i. /chats/chat
+        - POST create - body : { chatData }
+        - PUT update - body : { id, newData }
+        - GET getAll
+    ii. /chats/chat/:id
+        - GET get by id
+        - DELETE delete
+13. Subscriptions
+        i. /subscriptions/subscription
+            - POST create - body : { subscriptionData }
+            - PUT update - body : { id, newData }
+            - GET getAll
+        ii. /subscriptions/subscription/:id
+            - GET get by id
+            - DELETE delete
+14. Feedbacks
+        i. /
+            - POST create - body : { feedbacksData }
+            - PUT update - body : { id, newData }
+            - GET getAll
+        ii. /:id
+            - GET get by id
+            - DELETE delete
+15. Audits
+
+/===================================/
+    // TOCARE:
+[1] SocketIo and Chatting
+[2] JWT and CryptoJS
+[4] Logging and Auditing
+[5] Jest
+[6] PaymentIntegration
+[7] Multer
+[8] Clustering Node App
+
+
+/===================================/
+Starter Mailing Data: spektrasmith@gmail.com, [password]

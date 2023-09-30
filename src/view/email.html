@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Email Verification</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+      }
+      header {
+        background-color: #f0f0f0;
+        padding: 20px;
+        text-align: center;
+        color: #a55300;
+      }
+      .content {
+        padding: 20px 0;
+      }
+      .verification-code {
+        font-size: 24px;
+        font-weight: bold;
+        padding: 10px;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-decoration: none;
+        background-color: #4caf50;
+        color: white;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <h1>Email Verification</h1>
+    </header>
+    <section class="container">
+      <section class="content">
+        <p>Thank you for signing up! Your verification code is:</p>
+        <div class="verification-code">{{code}}</div>
+        <!-- <p>Please use this verification code to verify your email address:</p>
+      <a href="#" class="button">Verify Email</a> -->
+      </section>
+    </section>
+    <footer style="text-align: center">2023 &copy; Vertex</footer>
+  </body>
+</html>
