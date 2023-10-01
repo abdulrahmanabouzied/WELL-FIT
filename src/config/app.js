@@ -10,8 +10,18 @@ import errorHandler from "../middlewares/errorHandle.js";
 import dbConnection from "./database.js";
 import session from "../middlewares/session.js";
 import cookieParser from "cookie-parser";
+import { Server } from "socket.io";
+import handleSocket from "../services/socket.service.js";
+import { createServer } from "http";
 const app = express();
+const server = createServer(app);
 config();
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
 dbConnection();
 app.use(session);
@@ -39,12 +49,11 @@ app.use(
   })
 ); // gzipped
 
-/* TODO: adding middleware */
 // must be http://localhost:3000/src/public
 app.use("/src/public", express.static("src/public"));
+handleSocket(io);
 
-// Internal Server Error handling middleware
 app.use(routes);
 app.use(errorHandler);
 
-export default app;
+export default server;

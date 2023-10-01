@@ -5,8 +5,13 @@ const coachSchema = new Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     username: { type: String, required: true },
-    photo: Object,
+    role: {
+      type: String,
+      default: "coach",
+    },
     birthdate: Date,
+    photo: Object,
+    socketId: String,
     first_name: { type: String, required: true },
     last_name: { type: String, required: true },
     clients: {

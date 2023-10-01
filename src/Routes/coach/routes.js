@@ -5,20 +5,25 @@ import uploader from "../../middlewares/uploader.js";
 import asyncHandler from "express-async-handler";
 import authController from "./../../controller/auth/coach.js";
 import coachController from "../../controller/coach.js";
+import coachSchema from "../../validation/Coach/create.validation.js";
+import coachUpdateSchema from "../../validation/Coach/update.validation.js";
 const app = Router();
 const upload = uploader("coaches");
 
 app
   .route("/auth")
-  .post(asyncHandler(authController.registerCoach))
+  .post(validator(coachSchema), asyncHandler(authController.registerCoach))
   .get(asyncHandler(authController.getPass));
 
 app
   .route("/auth/coach")
   // password and email are sent in the body
-  .post(asyncHandler(authController.signIn))
+  .post(validator(coachUpdateSchema), asyncHandler(authController.signIn))
   // email is sent in body
-  .patch(asyncHandler(authController.forgotPassword));
+  .patch(
+    validator(coachUpdateSchema),
+    asyncHandler(authController.forgotPassword)
+  );
 
 // code is sent in the query
 app.get("/auth/mail", asyncHandler(authController.verifyEmailCode));
@@ -34,6 +39,7 @@ app
         maxCount: 1,
       },
     ]),
+    validator(coachUpdateSchema),
     asyncHandler(coachController.updateCoach)
   )
   .get(asyncHandler(coachController.getAllCoaches));

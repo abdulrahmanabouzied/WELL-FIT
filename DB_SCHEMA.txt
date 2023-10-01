@@ -189,6 +189,12 @@ Audits: {
 }
 
 
+"tbuild": "babel src -d dist",
+"build": "rm -fr dist && babel src -d dist && npm run copy",
+"copy": "copyfiles -u 1 src/public/**/* src/views/**/* dist",
+"serve": "node dist/server.js"
+
+
 Routes And Repos:
 
 Returned Object: {
@@ -340,13 +346,28 @@ Model Routes:
 
 /===================================/
     // TOCARE:
-[1] SocketIo and Chatting
+[1] SocketIo and Chatting [ ] Offline Chatting and file Chatting 
 [2] JWT and CryptoJS
 [4] Logging and Auditing
 [5] Jest
 [6] PaymentIntegration
 [7] Multer
 [8] Clustering Node App
+
+
+// TOCARE Cloning ing mongoose
+// Single-Sign-On
+
+/==================================/
+Technique of making a program
+1. Create an Empty Program and Set its Length
+2. Initialize it by empty day_details
+3. Adding Workout and meal to a day
+{=> day
+    workout: push( { is_done, workout } )
+    meal: push( { is_done, meal } )
+}
+3. Adding an instance of the proggram day_details to the client Program
 
 
 /===================================/

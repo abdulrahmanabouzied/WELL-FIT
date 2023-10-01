@@ -23,8 +23,7 @@ export default function (err, req, res, next) {
 
   // console.log(err);
   res.status(500).json({
-    error: err.message + "..",
-    trace: err,
+    error: err.message,
     code: 500,
     success: false,
   });

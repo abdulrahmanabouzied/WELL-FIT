@@ -1,6 +1,7 @@
 import Client from "./model.js";
 import Matrices from "../matrices/model.js";
 import Cart from "../cart/model.js";
+import Chat from "../chat/model.js";
 
 class ClientRepository {
   async createOne(clientData) {
@@ -13,11 +14,17 @@ class ClientRepository {
       const cart = await Cart.create({ client: clientData._id, products: [] });
       clientData.cart = cart._id;
 
+      // Initialize an empty chat for the client
+      const chat = await Chat.create({ messages: [] });
+      clientData.chat = chat._id;
+
       const client = await Client.create(clientData);
 
-      if (!client) {
+      if (!client || !cart || !matrices) {
         throw new Error("Client could not be created.");
       }
+      chat.client = client._id;
+
       return {
         code: 201,
         success: true,

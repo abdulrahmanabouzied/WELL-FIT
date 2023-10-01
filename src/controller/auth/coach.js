@@ -40,7 +40,6 @@ class ClientAuthController {
       const access_token = generateToken({ email, _id }, 60 * 15);
       const refresh_token = generateToken({ email, _id }, "3d");
 
-      /* TODO Reinitialize session */
       req.session.client = result.data;
       req.session.access_token = access_token.data;
       await req.session.save();
@@ -89,7 +88,6 @@ class ClientAuthController {
       const refresh_token = generateToken({ email, _id }, "3d");
 
       console.log(client);
-      /* TODO Reinitialize session */
       req.session.access_token = access_token.data;
       req.session.code = undefined;
       await req.session.save();

@@ -12,14 +12,12 @@ const ChatsSchema = new Schema(
     },
     messages: [
       {
-        type: new Schema({
-          text: String,
-          file: Object,
-          createdAt: {
-            type: Date,
-            default: Date.now,
-          },
-        }),
+        message: Object,
+        sender: String,
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
   },

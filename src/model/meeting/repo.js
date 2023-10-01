@@ -118,6 +118,12 @@ class MeetingRepository {
     }
   }
 
+  /**
+   * update Meering
+   * @param {String} meetingId
+   * @param {Object} updateData
+   * @returns {Object}
+   */
   async updateById(meetingId, updateData) {
     try {
       const updatedMeeting = await Meeting.findByIdAndUpdate(

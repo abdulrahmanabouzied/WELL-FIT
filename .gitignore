@@ -1,0 +1,12 @@
+# files
+.env
+/test.js
+
+# dirs
+/node_modules
+
+# uploads
+/src/public/uploads/workouts/*
+/src/public/uploads/meals/*
+/src/public/uploads/coaches/*
+/src/public/uploads/clients/*

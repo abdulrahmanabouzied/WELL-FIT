@@ -9,16 +9,15 @@ const workoutsRef = new Schema({
 });
 
 const nutritionRef = new Schema({
-  meal: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Meals",
-    },
-  ],
+  meal: {
+    type: Schema.Types.ObjectId,
+    ref: "Meals",
+  },
   is_done: { type: Boolean, default: false },
 });
 
 const dayRef = new Schema({
+  order: { type: Number },
   day: Date,
   workout: [workoutsRef],
   nutrition: [nutritionRef],
@@ -26,11 +25,12 @@ const dayRef = new Schema({
 
 const programSchema = new Schema(
   {
+    name: String,
     made_by: {
       type: Schema.Types.ObjectId,
       ref: "Coaches",
     },
-    length: Number,
+    length: { type: Number, required: true },
     target: {
       type: Schema.Types.String,
       enum: [

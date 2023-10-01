@@ -4,6 +4,8 @@ import { Router } from "express";
 import authenticate from "../../services/auth.service.js";
 import asyncHandler from "express-async-handler";
 import programController from "../../controller/program.js";
+import programSchema from "./../../validation/Program/update.validation.js";
+import programUpdateSchema from "./../../validation/Program/update.validation.js";
 
 const app = Router();
 
@@ -11,8 +13,12 @@ const app = Router();
 app
   .route("/")
   .all(authenticate)
-  .post(asyncHandler(programController.createProgram))
-  .put(asyncHandler(programController.updateProgram))
+  .post(validator(programSchema), asyncHandler(programController.createProgram))
+  .put(
+    validator(programUpdateSchema),
+    asyncHandler(programController.updateProgram)
+  )
+  .patch(asyncHandler(programController.addData))
   .get(asyncHandler(programController.getAllPrograms));
 
 app

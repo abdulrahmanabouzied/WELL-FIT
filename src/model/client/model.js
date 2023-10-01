@@ -105,6 +105,11 @@ const clientSchema = new mongoose.Schema(
     },
     chat: mongoose.Schema.Types.ObjectId,
     active: { type: Boolean, default: false },
+    socketId: String,
+    role: {
+      type: String,
+      default: "coach,",
+    },
   },
   {
     timestamps: true,

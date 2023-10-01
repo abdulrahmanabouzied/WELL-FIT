@@ -13,8 +13,6 @@ store.on("error", (err) => {
   console.log(`session store error: ${err}`);
 });
 
-/* TODO Handle if it will be deleted */
-
 export default session({
   store,
   secret: process.env.SESSION_SECRET,

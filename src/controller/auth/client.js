@@ -40,7 +40,6 @@ class ClientAuthController {
    */
   async signIn(req, res, next) {
     const { email, password } = req.body;
-    /* TODO remove password from getOne */
     const result = await ClientRepository.getOne({ email });
 
     if (!result.data) {
@@ -62,7 +61,6 @@ class ClientAuthController {
       const access_token = generateToken({ email, _id, active }, 60 * 15);
       const refresh_token = generateToken({ email, _id, active }, "3d");
 
-      /* TODO Reinitialize session */
       req.session.client = result.data;
       req.session.access_token = access_token.data;
       await req.session.save();
@@ -98,7 +96,6 @@ class ClientAuthController {
       });
 
       if (result.data) {
-        /* TODO Check setting cookies */
         await req.session.destroy();
         res.status(result.code).json(result);
       } else res.status(result.code).json(result);

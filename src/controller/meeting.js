@@ -21,9 +21,12 @@ class MeetingController {
    * @param {Object} res - The response object.
    */
   async updateMeeting(req, res) {
-    const meetingId = req.body.id;
-    const newData = req.body.newData;
-    const result = await MeetingRepository.updateById(meetingId, newData);
+    const { id } = req.query;
+    const data = req.body;
+    let result =
+      data?.status == "done"
+        ? await MeetingRepository.deleteById(id)
+        : await MeetingRepository.updateById(id, data);
     res.status(result.code).json(result);
   }
 

@@ -13,6 +13,7 @@ const MeetingsSchema = new Schema(
     date: Date,
     status: {
       type: Schema.Types.String,
+      default: "pending",
       enum: ["pending", "approved", "cancelled", "done"],
     },
     url: String,

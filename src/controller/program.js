@@ -18,9 +18,16 @@ class ProgramController {
    * @param {Object} res - Express response object.
    */
   async updateProgram(req, res) {
-    const programId = req.body.id;
-    const newData = req.body.newData;
-    const result = await ProgramRepository.updateById(programId, newData);
+    const { id } = req.query;
+    const data = req.body;
+    const result = await ProgramRepository.updateById(id, data);
+    res.status(result.code).json(result);
+  }
+
+  async addData(req, res) {
+    const { id, dayId } = req.query;
+    const data = req.body;
+    const result = await ProgramRepository.addDayData(dayId, id, data);
     res.status(result.code).json(result);
   }
 
