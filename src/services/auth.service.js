@@ -51,7 +51,7 @@ const verifyToken = (token) => {
         error: { name: "LocaleTokenNotFound", message: "Could not find token" },
       };
 
-    const payload = jwt.verify(token, process.env.jwt_SECRET, {
+    const payload = jwt.verify(token, process.env.JWT_SECRET, {
       algorithms: ["HS512"],
     });
 
