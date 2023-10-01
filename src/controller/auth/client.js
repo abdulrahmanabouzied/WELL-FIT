@@ -66,7 +66,6 @@ class ClientAuthController {
       console.log(`Token generated: access:${access_token.data}`);
       console.log(`Token generated: refresh:${refresh_token.data}`);
 
-      console.log(encrypt(refresh_token.data));
       req.session.client = result.data;
       req.session.access_token = access_token.data;
       await req.session.save();
