@@ -93,9 +93,7 @@ const verifyEmail = async (to, code) => {
  */
 function getTemplate(code) {
   try {
-    const template = fs
-      .readFileSync(path.join(__dirname, "./email.html"))
-      .toString();
+    const template = fs.readFileSync("src/view/email.html").toString();
     return mustache.render(template, { code });
   } catch (error) {
     return {
