@@ -56,25 +56,32 @@ class ClientAuthController {
 
     const signed = await bcrypt.compare(password, result?.data?.password);
 
+    console.log(`New Login to the System: ${email}`);
+
     if (signed) {
       const { email, _id, active } = result.data;
       const access_token = generateToken({ email, _id, active }, 60 * 15);
       const refresh_token = generateToken({ email, _id, active }, "3d");
 
+      console.log(`Token generated: access:${access_token.data}`);
+      console.log(`Token generated: refresh:${refresh_token.data}`);
+
+      console.log(encrypt(refresh_token.data));
       req.session.client = result.data;
       req.session.access_token = access_token.data;
       await req.session.save();
 
-      res.cookie(
-        "x-refresh-token",
-        encrypt(JSON.stringify(refresh_token.data)),
-        {
-          httpOnly: true,
-          maxAge: getTime("3d"),
-          secure: false,
-          sameSite: "strict",
-        }
-      );
+      if (refresh_token.data)
+        res.cookie(
+          "x-refresh-token",
+          encrypt(JSON.stringify(refresh_token.data)),
+          {
+            httpOnly: true,
+            maxAge: getTime("3d"),
+            secure: false,
+            sameSite: "strict",
+          }
+        );
 
       return res.status(result.code).json(result);
     }

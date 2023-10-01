@@ -1,7 +1,7 @@
 import multer from "multer";
 
 export default function (err, req, res, next) {
-  console.log(`Async Handler: ${err}`);
+  console.log(`Async Handler: ${err.stack}`);
 
   if (err instanceof multer.MulterError) {
     if (err.code == "LIMIT_FILE_SIZE") {
