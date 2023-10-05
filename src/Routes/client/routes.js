@@ -39,8 +39,6 @@ app
   .get(asyncHandler(clientController.getClientById))
   .delete(asyncHandler(clientController.deleteClient));
 
-console.log(process.env);
-
 app.get("/:id/matrices", authenticate, clientController.getClientMats);
 
 export default app;

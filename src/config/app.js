@@ -23,6 +23,8 @@ const io = new Server(server, {
   },
 });
 
+const chat = io.of("/chat");
+
 dbConnection();
 app.use(session);
 app.use(express.json({ limit: "50mb" }));
@@ -51,7 +53,7 @@ app.use(
 
 // must be http://localhost:3000/src/public
 app.use("/src/public", express.static("src/public"));
-handleSocket(io);
+handleSocket(chat);
 
 app.use(routes);
 app.use(errorHandler);

@@ -26,11 +26,10 @@ class ClientAuthController {
    */
   async signIn(req, res) {
     const { email, password } = req.body;
-
     const result = await CoachRepository.getOne({ email });
 
     if (!result.data) {
-      res.status(result.code).json(result);
+      return res.status(result.code).json(result);
     }
 
     const signed = await bcrypt.compare(password, result.data.password);
@@ -54,9 +53,22 @@ class ClientAuthController {
           sameSite: "strict",
         }
       );
-
-      return res.status(result.code).json(result);
-    }
+      return res.status(result.code).json({
+        code: result.code,
+        success: result.success,
+        data: {
+          _id: result.data._id,
+          username: result.data.username,
+          clients: result.data.clients,
+          upComingMeetings: result.data.upComingMeetings,
+        },
+      });
+    } else
+      return res.status(401).json({
+        code: 401,
+        success: false,
+        error: "not authorized",
+      });
   }
 
   /**

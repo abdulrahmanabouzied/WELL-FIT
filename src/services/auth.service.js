@@ -18,7 +18,6 @@ const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
  */
 const generateToken = (payload, duration) => {
   try {
-    console.log(payload, process.env.JWT_SECRET);
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       algorithm: "HS512",
       expiresIn: duration || 60 * 60,

@@ -6,19 +6,21 @@ import asyncHandler from "express-async-handler";
 import authController from "./../../controller/auth/coach.js";
 import coachController from "../../controller/coach.js";
 import coachSchema from "../../validation/Coach/create.validation.js";
-import coachUpdateSchema from "../../validation/Coach/update.validation.js";
+import coachUpdateSchema, {
+  signInSchema,
+} from "../../validation/Coach/update.validation.js";
 const app = Router();
 const upload = uploader("coaches");
 
 app
   .route("/auth")
-  .post(validator(coachSchema), asyncHandler(authController.registerCoach))
+  .post(asyncHandler(authController.registerCoach))
   .get(asyncHandler(authController.getPass));
 
 app
   .route("/auth/coach")
   // password and email are sent in the body
-  .post(validator(coachUpdateSchema), asyncHandler(authController.signIn))
+  .post(validator(signInSchema), asyncHandler(authController.signIn))
   // email is sent in body
   .patch(
     validator(coachUpdateSchema),

@@ -86,7 +86,10 @@ class CoachRepository {
 
   async getOne(filter) {
     try {
-      const coach = await Coach.findOne(filter).lean();
+      const coach = await Coach.findOne(filter)
+        .populate("clients")
+        .populate("upComingMeetings")
+        .lean();
 
       if (!coach) {
         return {

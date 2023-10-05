@@ -5,6 +5,25 @@ const objectIdSchema = Joi.string()
     "string.pattern": "Invalid Object ID",
   });
 
+export const signInSchema = Joi.object({
+  email: Joi.string()
+    .required()
+    .email({
+      minDomainSegments: 2,
+    })
+    .messages({
+      "string.base": "Email must be a valid string.",
+      "string.empty": "Email cannot be empty.",
+      "string.email": "Email must be a valid email address.",
+      "any.required": "Email is required.",
+    }),
+  password: Joi.string().required().messages({
+    "string.base": "Password must be a string.",
+    "string.empty": "Password cannot be empty.",
+    "any.required": "Password is required.",
+  }),
+});
+
 const coachUpdateSchema = Joi.object({
   email: Joi.string()
     .email({

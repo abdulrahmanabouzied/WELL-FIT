@@ -1,5 +1,5 @@
-import ClientRepository from "./../model/client/repo.js";
-import CoachRepository from "./../model/coach/repo.js";
+import Client from "./../model/client/model.js";
+import Coach from "./../model/coach/model.js";
 import Chat from "./../model/chat/model.js";
 
 /**
@@ -11,39 +11,50 @@ import Chat from "./../model/chat/model.js";
  */
 
 const handleSocket = (io) => {
-  io.on("connection", async (socket) => {
+  // Middleware to the Socket
+  io.use(async (socket, next) => {
     const {
-      id,
-      handshake: { auth, query },
-    } = socket;
-    const remoteId = query?._id;
-    let result;
-    console.log(`Socket connection: ${id}, ${remoteId}`);
+      auth: { token, role, chat },
+    } = socket.handshake;
+    let user;
 
-    /* TODO: if error occured : disconnnect */
-
-    if (query?.role === "coach") {
-      result = await CoachRepository.updateById(remoteId, {
-        socketId: id,
-      });
-      console.log(`Coach Connection: ${result.data.email}`);
-    } else if (query?.role === "client") {
-      result = await ClientRepository.updateById(remoteId, {
-        socketId: id,
-      });
-      console.log(`Client Connection: ${result.data.email}`);
+    if (token && role && role === "coach") {
+      user = await Coach.findById(token);
+      if (user) {
+        user.socketId = socket.id;
+        socket.coachId = user._id;
+        socket.chatId = chat;
+        await user.save();
+        next();
+      }
+    } else if (token && role && role === "client") {
+      user = await Coach.findById(token);
+      if (user) {
+        user.socketId = socket.id;
+        socket.clientId = user._id;
+        socket.chatId = chat;
+        await user.save();
+        next();
+      }
+    } else {
+      next(new Error("Not authenticated!"));
     }
+  });
 
-    socket.on("send", async (msg, otherId, client) => {
+  // Handle Socket Events
+  io.on("connection", async (socket) => {
+    const { clientId, coachId, chatId } = socket;
+
+    socket.on("send", async (msg, otherId) => {
       socket.broadcast.to(otherId).emit("receive", msg);
 
       let success = await Chat.findOneAndUpdate(
         {
-          client,
+          chatId,
         },
         {
           $push: {
-            messages: { message: msg, sender: query?.role },
+            messages: { message: msg, sender: socket.handshake.auth?.role },
           },
         }
       );
@@ -51,13 +62,13 @@ const handleSocket = (io) => {
 
     socket.on("disconnect", async (cause) => {
       console.log(`Disconnecting from ${id}, ${cause}`);
-      if (query?.role === "coach") {
-        const result = await CoachRepository.updateById(remoteId, {
-          socketId: null,
+      if (clientId) {
+        await Client.findByIdAndUpdate(clientId, {
+          $unset: { socketId: null },
         });
-      } else if (query?.role === "client") {
-        const result = await ClientRepository.updateById(remoteId, {
-          socketId: null,
+      } else if (coachId) {
+        await Coach.findByIdAndUpdate(coachId, {
+          $unset: { socketId: null },
         });
       }
     });
