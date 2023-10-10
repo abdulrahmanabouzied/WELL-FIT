@@ -4,7 +4,8 @@ import { Router } from "express";
 import authenticate from "../../services/auth.service.js";
 import asyncHandler from "express-async-handler";
 import workoutController from "../../controller/workout.js";
-const upload = uploader("workouts");
+// const upload = uploader("workouts");
+const upload = uploader("data");
 
 const app = Router();
 

@@ -1,5 +1,6 @@
 import MealRepository from "../model/meal/repo.js";
 import fs from "fs";
+import {uploadFile, removeFile} from "../middlewares/cloudinary.js";
 
 class MealController {
   /**
@@ -9,8 +10,15 @@ class MealController {
    */
   async createMeal(req, res) {
     let data = req.body;
-    // let video = req.file;
-    data.video = req?.file;
+    let video = req.file;
+    if (video)
+    {
+      video = await uploadFile(video.path, 'data');
+      if (video.error)
+        throw new Error(video.error)
+      video = video.data
+    }
+    data.video = video || undefined;
 
     const result = await MealRepository.createOne(data);
     res.status(result.code).json(result);
@@ -24,8 +32,14 @@ class MealController {
   async updateMeal(req, res) {
     const { id } = req.query;
     const data = req.body;
-    const video = req.file;
-
+    let video = req.file;
+    if (video)
+    {
+      video = await uploadFile(video.path, 'data');
+      if (video.error)
+        throw new Error(video.error)
+      video = video.data
+    }
     const old = await MealRepository.getById(id);
 
     if (!old.data) {
@@ -34,7 +48,8 @@ class MealController {
     }
 
     if (video) {
-      if (old.data.video) fs.unlinkSync(old.data.video.path);
+      if (old.data.video) await removeFile(old.data.video.resource_type, old.data.video.public_id);
+
       data.video = video;
     }
     const result = await MealRepository.updateById(id, data);

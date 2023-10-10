@@ -1,4 +1,3 @@
-import bodyParser from "body-parser";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -22,14 +21,13 @@ const io = new Server(server, {
     origin: "*",
   },
 });
-
 const chat = io.of("/chat");
 
-dbConnection();
+await dbConnection();
 app.use(session);
 app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: false }));
 app.use(cookieParser(process.env.SESSION_SECRET));
-app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 app.use(
   cors({
     origin: "*",

@@ -1,6 +1,7 @@
 import CoachRepository from "../model/coach/repo.js";
 import genHash from "../utils/genHash.js";
 import fs from "fs";
+import { removeFile, uploadFile } from "../middlewares/cloudinary.js";
 
 class CoachController {
   /**
@@ -35,9 +36,18 @@ class CoachController {
 
       return res.status(old.code).json(old);
     }
+
     if (files?.photo) {
-      if (old.data.photo) fs.unlinkSync(old.data.photo.path);
-      data.photo = files?.photo[0];
+      // if (old.data.photo) fs.unlinkSync(old.data.photo.path);
+      if (old.data.photo) {
+        await removeFile(old.data.photo.url, old.data.photo.public_id);
+      }
+
+      // data.photo = files?.photo[0];
+      const uploaded = await uploadFile(files.photo[0].path, 'data');
+      if (uploaded.error)
+        throw new Error(uploaded.error)
+      data.photo = uploaded.data;
     }
 
     const result = await CoachRepository.updateById(id, data);

@@ -6,7 +6,8 @@ import clientController from "../../controller/client.js";
 import authController from "../../controller/auth/client.js";
 import uploader from "../../middlewares/uploader.js";
 const app = Router();
-const upload = uploader("clients");
+// const upload = uploader("clients");
+const upload = uploader("data");
 
 app
   .route("/auth")

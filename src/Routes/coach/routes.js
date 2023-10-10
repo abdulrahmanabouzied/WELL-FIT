@@ -10,7 +10,8 @@ import coachUpdateSchema, {
   signInSchema,
 } from "../../validation/Coach/update.validation.js";
 const app = Router();
-const upload = uploader("coaches");
+// const upload = uploader("coaches");
+const upload = uploader("data");
 
 app
   .route("/auth")
