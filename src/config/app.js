@@ -50,7 +50,7 @@ app.use(
 ); // gzipped
 
 // must be http://localhost:3000/src/public
-app.use("/src/public", express.static("src/public"));
+// app.use("/src/public", express.static("src/public"));
 handleSocket(chat);
 
 app.use(routes);
