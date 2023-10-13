@@ -9,7 +9,8 @@ export default (schema) => (req, res, next) => {
     return res.status(400).json({
       code: 400,
       success: false,
-      error: errorDetails,
+      error: errorDetails[0].message,
+      errors: errorDetails,
       name: "ValidationError",
     });
   }
