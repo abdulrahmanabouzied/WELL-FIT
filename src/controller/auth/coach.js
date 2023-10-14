@@ -59,15 +59,16 @@ class ClientAuthController {
         data: {
           _id: result.data._id,
           username: result.data.username,
-          clients: result.data.clients,
-          upComingMeetings: result.data.upComingMeetings,
+          email: result.data.email,
+          clients: result.data.clients?.length,
+          upComingMeetings: result.data.upComingMeetings?.length,
         },
       });
     } else
       return res.status(401).json({
         code: 401,
         success: false,
-        error: "not authorized",
+        error: "Email or Password is incorrect.",
       });
   }
 
@@ -140,7 +141,7 @@ class ClientAuthController {
     const result = await CoachRepository.getOne({ email });
 
     if (!result.data) {
-      res.status(result.code).json(result);
+      return res.status(result.code).json(result);
     }
 
     const code = Math.floor(Math.random() * 9000) + 1000;

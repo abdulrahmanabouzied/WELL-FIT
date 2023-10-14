@@ -2,14 +2,6 @@ import { Schema, model } from "mongoose";
 
 const MeetingsSchema = new Schema(
   {
-    coach: {
-      type: Schema.Types.ObjectId,
-      ref: "Coaches",
-    },
-    client: {
-      type: Schema.Types.ObjectId,
-      ref: "Clients",
-    },
     date: Date,
     status: {
       type: Schema.Types.String,

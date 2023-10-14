@@ -1,15 +1,28 @@
 import Meeting from "./model.js";
+import Coach from "../coach/model.js";
+import Client from "../client/model.js";
 
 class MeetingRepository {
   /**
    *  createOne - create a new Meeting
    * @param {Object} meetingData {coach, client, url, date}
+   * @param {String} client - client id
+   * @param {String} coach - coach id
    * @returns {Promise<Object>} Object with results
    * @description expected appending it to related coach and client
    */
-  async createOne(meetingData) {
+  async createOne(meetingData, client, coach) {
     try {
       const meeting = await Meeting.create(meetingData);
+      let addedToCoach = await Coach.findByIdAndUpdate(coach, {
+        $push: {
+          upComingMeetings: meeting._id,
+        },
+      });
+      let addedToClient = await Client.findByIdAndUpdate(client, {
+        upComingMeeting: meeting._id,
+      });
+
       return {
         code: 201,
         success: true,
@@ -17,6 +30,7 @@ class MeetingRepository {
         error: null,
       };
     } catch (error) {
+      console.log(error.stack);
       return {
         code: 400,
         success: false,

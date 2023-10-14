@@ -1,14 +1,6 @@
 import Joi from "joi";
 
 const createMeetingSchema = Joi.object({
-  coach: Joi.string().required().messages({
-    "any.required": "Coach is required.",
-    "string.empty": "Coach cannot be empty.",
-  }),
-  client: Joi.string().required().messages({
-    "any.required": "Client is required.",
-    "string.empty": "Client cannot be empty.",
-  }),
   date: Joi.date().required().messages({
     "any.required": "Date is required.",
     "date.base": "Date must be a valid date.",

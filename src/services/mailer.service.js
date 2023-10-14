@@ -24,10 +24,12 @@ const send = async (to, subject, html, text) => {
     const info = await transporter.sendMail(mailOpts);
 
     console.log(info.envelope);
+    console.log(info);
     return {
       code: 200,
-      success: true,
-      data: info,
+      success: info.accepted.length ? true : false,
+      accepted: info.accepted[0],
+      data: info.envelope,
     };
   } catch (error) {
     console.log(error);

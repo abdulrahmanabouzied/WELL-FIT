@@ -11,7 +11,20 @@ class MeetingController {
    */
   async createMeeting(req, res) {
     const meetingData = req.body;
-    const result = await MeetingRepository.createOne(meetingData);
+    const { client, coach } = req.query;
+
+    if (!client || !coach)
+      return res.status(400).json({
+        code: 400,
+        success: false,
+        error: "client and coach are required!!",
+      });
+
+    const result = await MeetingRepository.createOne(
+      meetingData,
+      client,
+      coach
+    );
     res.status(result.code).json(result);
   }
 

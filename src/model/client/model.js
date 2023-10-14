@@ -37,7 +37,19 @@ const clientSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    photo: Object,
+    photo: {
+      type: Object,
+      default: {
+        public_id: "data/defaults/jzy34esu9kochueiqtqs",
+        format: "png",
+        resource_type: "image",
+        type: "upload",
+        url: "https://res.cloudinary.com/dmhdwn3pq/image/upload/v1697317225/data/defaults/jzy34esu9kochueiqtqs.png",
+        secure_url:
+          "https://res.cloudinary.com/dmhdwn3pq/image/upload/f_auto,q_auto/v1/data/defaults/jzy34esu9kochueiqtqs",
+        folder: "data/defaults",
+      },
+    },
     gender: {
       type: String,
       enum: ["male", "female"],
