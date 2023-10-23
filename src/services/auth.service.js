@@ -121,7 +121,7 @@ const authenticate = async (req, res, next) => {
       return res.status(401).json({
         code: 403,
         success: false,
-        error: "Not authorized, Please login and try again!",
+        error: "Session Expired, Please login and try again!",
       });
     }
 
