@@ -104,6 +104,22 @@ function getTemplate(code) {
 }
 
 /**
+ * getToken - get token from req
+ * @param {Request} req
+ * @returns {String | null} token
+ */
+const getToken = (req) => {
+  const authHeader =
+    req.headers["Authorization"] || req.headers["authorization"];
+  const refreshHeader = req.headers["x-refresh-token"];
+  const res = {
+    refresh_token: refreshHeader || "",
+    access_token: authHeader ? authHeader.replace("Bearer ", "") : "",
+  };
+  return res;
+};
+
+/**
  * Authorize user account
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
@@ -113,9 +129,10 @@ function getTemplate(code) {
 
 const authenticate = async (req, res, next) => {
   try {
-    let access_token = req.session.access_token;
+    let access_token = req.session.access_token || getToken(req).access_token;
     // let refresh_token = parseCookies(req)["x-refresh-token"];
-    let refresh_token = req?.cookies["x-refresh-token"];
+    let refresh_token =
+      req?.cookies["x-refresh-token"] || getToken(req).refresh_token;
 
     if (!access_token && !refresh_token) {
       return res.status(401).json({
@@ -196,6 +213,5 @@ const authenticate = async (req, res, next) => {
     });
   }
 };
-
 export default authenticate;
 export { verifyEmail, verifyToken, generateToken };

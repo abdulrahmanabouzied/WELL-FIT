@@ -372,3 +372,9 @@ Technique of making a program
 
 /===================================/
 
+Verify Code Sequence:
+    - coach login
+    - coach forgot password
+    - generate code and send it to the mail adn to the front to save it 
+    - user enters the code, front compare 
+    - if true login

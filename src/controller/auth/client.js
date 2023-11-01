@@ -61,7 +61,7 @@ class ClientAuthController {
     if (signed) {
       const { email, _id, active } = result.data;
       const access_token = generateToken({ email, _id, active }, 60 * 15);
-      const refresh_token = generateToken({ email, _id, active }, "3d");
+      let refresh_token = generateToken({ email, _id, active }, "3d");
 
       console.log(`Token generated: access:${access_token.data}`);
       console.log(`Token generated: refresh:${refresh_token.data}`);
@@ -69,20 +69,19 @@ class ClientAuthController {
       req.session.client = result.data;
       req.session.access_token = access_token.data;
       await req.session.save();
+      refresh_token = encrypt(JSON.stringify(refresh_token.data));
 
       if (refresh_token.data)
-        res.cookie(
-          "x-refresh-token",
-          encrypt(JSON.stringify(refresh_token.data)),
-          {
-            httpOnly: true,
-            maxAge: getTime("3d"),
-            secure: false,
-            sameSite: "strict",
-          }
-        );
+        res.cookie("x-refresh-token", refresh_token, {
+          httpOnly: true,
+          maxAge: getTime("3d"),
+          secure: false,
+          sameSite: "strict",
+        });
 
-      return res.status(result.code).json(result);
+      return res
+        .status(result.code)
+        .json({ ...result, access_token, refresh_token });
     }
     return res.status(401).json({ ...result, message: "Invalid Password!" });
   }
