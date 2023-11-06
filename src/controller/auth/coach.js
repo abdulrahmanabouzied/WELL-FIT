@@ -92,9 +92,11 @@ class ClientAuthController {
    * @param {Object} res - Express response object.
    */
   async verifyEmailCode(req, res) {
-    const { code } = req.query;
+    const { code, email } = req.query;
     const { client } = req.session;
-    if (code == req.session.code) {
+    const user = await CoachRepository.getOne({ email });
+
+    if (code == user.data?.verifyCode) {
       const { email, _id } = client;
       const access_token = generateToken({ email, _id }, 60 * 15);
       const refresh_token = generateToken({ email, _id }, "3d");
@@ -149,8 +151,14 @@ class ClientAuthController {
     req.session.code = code;
     await req.session.save();
     const verified = await Verify(email, code);
+    const updateCode = await CoachRepository.updateOne(
+      { email },
+      {
+        verifyCode: code,
+      }
+    );
 
-    if (!verified.data) {
+    if (!verified.data || !updateCode) {
       res.status(verified.code).json(verified);
     }
 

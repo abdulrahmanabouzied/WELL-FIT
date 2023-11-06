@@ -42,6 +42,7 @@ const coachSchema = new Schema(
         },
       ],
     },
+    verifyCode: Number,
   },
   {
     timestamps: true,

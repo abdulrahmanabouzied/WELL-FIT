@@ -65,6 +65,10 @@ const coachSchema = Joi.object({
     "string.base": "Username must be a string.",
     "string.empty": "Username cannot be empty.",
   }),
+  verifyCode: Joi.number().optional().messages({
+    "number.base": "Username must be a string.",
+    "number.empty": "Username cannot be empty.",
+  }),
 });
 
 export default coachSchema;
