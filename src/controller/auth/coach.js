@@ -124,7 +124,7 @@ class ClientAuthController {
         success: true,
         data: "Email verified",
         id: user.data._id,
-        refreshToken: refresh_token?.data,
+        refreshToken: encrypt(JSON.stringify(refresh_token?.data)),
         accessToken: access_token?.data,
       });
     } else {
