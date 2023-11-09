@@ -93,18 +93,18 @@ class ClientAuthController {
    */
   async verifyEmailCode(req, res) {
     const { code, email } = req.query;
-    const { client } = req.session;
+    // const { client } = req.session;
     const user = await CoachRepository.getOne({ email });
 
     if (code == user.data?.verifyCode) {
-      const { email, _id } = client;
+      // const { email, _id } = client;
       const access_token = generateToken({ email, _id }, 60 * 15);
       const refresh_token = generateToken({ email, _id }, "3d");
 
       console.log(client);
-      req.session.access_token = access_token.data;
-      req.session.code = undefined;
-      await req.session.save();
+      // req.session.access_token = access_token.data;
+      // req.session.code = undefined;
+      // await req.session.save();
 
       res.cookie(
         "x-refresh-token",
