@@ -98,10 +98,12 @@ class ClientAuthController {
 
     if (code == user.data?.verifyCode) {
       // const { email, _id } = client;
-      const access_token = generateToken({ email, _id }, 60 * 15);
-      const refresh_token = generateToken({ email, _id }, "3d");
+      const access_token = generateToken(
+        { email, _id: user.data._id },
+        60 * 15
+      );
+      const refresh_token = generateToken({ email, _id: user.data._id }, "3d");
 
-      console.log(client);
       // req.session.access_token = access_token.data;
       // req.session.code = undefined;
       // await req.session.save();

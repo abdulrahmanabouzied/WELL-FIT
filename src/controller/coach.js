@@ -44,9 +44,8 @@ class CoachController {
       }
 
       // data.photo = files?.photo[0];
-      const uploaded = await uploadFile(files.photo[0].path, 'data');
-      if (uploaded.error)
-        throw new Error(uploaded.error)
+      const uploaded = await uploadFile(files.photo[0].path, "data");
+      if (uploaded.error) throw new Error(uploaded.error);
       data.photo = uploaded.data;
     }
 
@@ -92,8 +91,9 @@ class CoachController {
    * @param {Object} res - Express response object.
    */
   async getCoachClients(req, res) {
-    const coachId = req.params.id;
-    const result = await CoachRepository.getById(coachId);
+    const { id } = req.params;
+    const result = await CoachRepository.getById(id);
+
     result.data = result.data.clients;
     res.status(result.code).json(result);
   }
