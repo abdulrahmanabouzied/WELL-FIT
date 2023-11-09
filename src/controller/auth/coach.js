@@ -123,6 +123,9 @@ class ClientAuthController {
         code: 200,
         success: true,
         data: "Email verified",
+        id: user.data._id,
+        refreshToken: refresh_token?.data,
+        accessToken: access_token?.data,
       });
     } else {
       res.status(401).json({
