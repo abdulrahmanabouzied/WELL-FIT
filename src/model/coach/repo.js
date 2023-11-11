@@ -154,10 +154,10 @@ class CoachRepository {
 
   async getById(coachId) {
     try {
-      const coach = await Coach.findById(coachId, "-password")
-        .populate("upComingMeetings")
-        .populate("clients")
-        .lean();
+      const coach = await Coach.findById(
+        coachId,
+        "-password -verifyCode -role -birthdate -createdAt -updatedAt -__v"
+      ).lean();
 
       if (!coach) {
         return {
