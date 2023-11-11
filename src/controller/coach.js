@@ -97,6 +97,14 @@ class CoachController {
     result.data = result.data.clients;
     res.status(result.code).json(result);
   }
+
+  async getCoachMeetings(req, res) {
+    const { id } = req.params;
+    const result = await CoachRepository.getById(id);
+
+    result.data = result.data?.upComingMeetings;
+    res.status(result.code).json(result);
+  }
 }
 
 export default new CoachController();

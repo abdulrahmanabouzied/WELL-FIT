@@ -59,4 +59,10 @@ app.get(
   asyncHandler(coachController.getCoachClients)
 );
 
+app.get(
+  "/:id/meetings",
+  authenticate,
+  asyncHandler(coachController.getCoachMeetings)
+);
+
 export default app;
