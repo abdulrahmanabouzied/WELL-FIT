@@ -115,6 +115,43 @@ class CoachRepository {
     }
   }
 
+  async getClientsMeetings(coachId) {
+    try {
+      const coach = await Coach.findById(coachId, "-password")
+        .populate("clients")
+        .populate({
+          path: "clients",
+          populate: {
+            path: "upComingMeeting",
+            model: "Meetings",
+          },
+        })
+        .lean();
+
+      if (!coach) {
+        return {
+          code: 404,
+          success: false,
+          data: null,
+          error: "Coach not found",
+        };
+      }
+      return {
+        code: 200,
+        success: true,
+        data: coach,
+        error: null,
+      };
+    } catch (error) {
+      return {
+        code: 500,
+        success: false,
+        data: null,
+        error: error.message,
+      };
+    }
+  }
+
   async getById(coachId) {
     try {
       const coach = await Coach.findById(coachId, "-password")

@@ -100,9 +100,15 @@ class CoachController {
 
   async getCoachMeetings(req, res) {
     const { id } = req.params;
-    const result = await CoachRepository.getById(id);
+    const result = await CoachRepository.getClientsMeetings(id);
 
-    result.data = result.data?.upComingMeetings;
+    result.data = result.data.clients.map((client) => ({
+      id: client._id,
+      firstName: client.first_name,
+      lastName: client.last_name,
+      meeting: client.upComingMeeting,
+      photo: client?.photo,
+    }));
     res.status(result.code).json(result);
   }
 }

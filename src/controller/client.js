@@ -48,9 +48,8 @@ class ClientController {
       // data.photo = files?.photo[0];
 
       /// cloudinary upload
-      const uploaded = await uploadFile(files?.photo[0].path, 'data');
-      if (uploaded.error)
-        throw new Error(uploaded.error)
+      const uploaded = await uploadFile(files?.photo[0].path, "data");
+      if (uploaded.error) throw new Error(uploaded.error);
       data.photo = uploaded.data;
     }
 
@@ -59,19 +58,18 @@ class ClientController {
       // if (old.data.inbody) fs.unlinkSync(old.data.inbody.path);
       if (old.data.inbody) {
         await removeFile(
-            old.data.inbody.resource_type,
-            old.data.inbody.public_id
+          old.data.inbody.resource_type,
+          old.data.inbody.public_id
         );
       }
 
       // data.photo = files?.photo[0];
 
       /// cloudinary upload
-      const uploaded = await uploadFile(files?.inbody[0].path, 'data');
+      const uploaded = await uploadFile(files?.inbody[0].path, "data");
 
       // data.inbody = files?.inbody[0];
-      if (uploaded.error)
-        throw new Error(uploaded.error)
+      if (uploaded.error) throw new Error(uploaded.error);
       data.inbody = uploaded.data;
     }
 
