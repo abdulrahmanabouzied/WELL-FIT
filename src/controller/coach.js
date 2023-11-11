@@ -73,7 +73,10 @@ class CoachController {
     const result = await CoachRepository.getById(coachId);
     result.data.upComingMeetings = result?.data?.upComingMeetings.length;
     result.data.clients = result?.data?.clients.length;
-
+    result.data.photo = {
+      url: result.data?.photo?.url,
+      secure_url: result.data?.photo?.secure_url,
+    };
     res.status(result.code).json(result);
   }
 
