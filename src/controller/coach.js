@@ -71,8 +71,8 @@ class CoachController {
   async getCoachById(req, res) {
     const coachId = req.params.id;
     const result = await CoachRepository.getById(coachId);
-    result.data.upComingMeetings = result?.data?.upComingMeetings.length;
-    result.data.clients = result?.data?.clients.length;
+    result.data.upComingMeetings = result?.data?.upComingMeetings?.length ?? 0;
+    result.data.clients = result?.data?.clients?.length ?? 0;
     result.data.photo = {
       url: result.data?.photo?.url,
       secure_url: result.data?.photo?.secure_url,

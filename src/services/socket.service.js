@@ -13,9 +13,13 @@ import Chat from "./../model/chat/model.js";
 const handleSocket = (io) => {
   // Middleware to the Socket
   io.use(async (socket, next) => {
+    /*
     const {
       auth: { token, role, chat },
     } = socket.handshake;
+    */
+    const { token, role, chat } = socket.handshake.query;
+
     let user;
 
     if (token && role && role === "coach") {
@@ -28,7 +32,8 @@ const handleSocket = (io) => {
         next();
       }
     } else if (token && role && role === "client") {
-      user = await Coach.findById(token);
+      user = await Client.findById(token);
+      console.log(user);
       if (user) {
         user.socketId = socket.id;
         socket.clientId = user._id;
@@ -45,6 +50,8 @@ const handleSocket = (io) => {
   io.on("connection", async (socket) => {
     const { clientId, coachId, chatId } = socket;
 
+    console.log(socket.id, "Connected");
+
     socket.on("send", async (msg, otherId) => {
       socket.broadcast.to(otherId).emit("receive", msg);
 
@@ -54,14 +61,14 @@ const handleSocket = (io) => {
         },
         {
           $push: {
-            messages: { message: msg, sender: socket.handshake.auth?.role },
+            messages: { message: msg, sender: coachId || clientId },
           },
         }
       );
     });
 
     socket.on("disconnect", async (cause) => {
-      console.log(`Disconnecting from ${id}, ${cause}`);
+      console.log(`Disconnecting from ${socket.id}, ${cause}`);
       if (clientId) {
         await Client.findByIdAndUpdate(clientId, {
           $unset: { socketId: null },

@@ -120,7 +120,7 @@ const clientSchema = new mongoose.Schema(
     socketId: String,
     role: {
       type: String,
-      default: "coach,",
+      default: "coach",
     },
   },
   {
